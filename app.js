@@ -28,11 +28,20 @@ io.on('connection', (socket) => {
     });
 });
 
+function sleep(ms){
+  return new Promise(resolve => setTimeout(resolve,ms));
+}
+
 function togglePin(pin){
     pins[pin].writeSync(1-pins[pin].readSync());
     io.sockets.emit('updateClient', update());
 }
 
+function blinkLights(pin)
+  while(blink){
+    sleep(100).then(()=>{togglePin(pin);});
+  }
+}
 function update(){
   return {
     led:pins.led.readSync(),
