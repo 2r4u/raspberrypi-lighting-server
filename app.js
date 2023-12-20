@@ -3,6 +3,7 @@ var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var Gpio = require('onoff').Gpio;
+var blink=false;
 
 const pins = {
   led: new Gpio(17,'out'),
@@ -24,7 +25,8 @@ io.on('connection', (socket) => {
     socket.emit('updateClient', update());
     //received from client (index.html)
     socket.on('updateServer', pin => {
-        togglePin(pin);
+      blink=!blink;
+      blinkLights(pin);
     });
 });
 
@@ -37,9 +39,9 @@ function togglePin(pin){
     io.sockets.emit('updateClient', update());
 }
 
-function blinkLights(pin)
+function blinkLights(pin){
   while(blink){
-    sleep(100).then(()=>{togglePin(pin);});
+    sleep(1000).then(()=>{togglePin(pin);});
   }
 }
 function update(){
